@@ -1,0 +1,83 @@
+# --- INCIDENT SERVICE DEPLOYMENT ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-service
+  labels:
+    app: incident-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: incident-service
+  template:
+    metadata:
+      labels:
+        app: incident-service
+    spec:
+      containers:
+      - name: incident-service
+        image: 728925775506.dkr.ecr.us-east-1.amazonaws.com/incident-service:latest
+        ports:
+        - containerPort: 8000
+        env:
+        # DB connection parameters
+        - name: DB_HOST
+          value: "incident-app-db.cajsgsa6y9pn.us-east-1.rds.amazonaws.com" # <--- REPLACE WITH YOUR RDS ENDPOINT
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "password123"
+        - name: NOTIFICATION_SERVICE_URL
+          value: "http://notification-service:8001"
+
+---
+# --- NOTIFICATION SERVICE DEPLOYMENT ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  labels:
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+      - name: notification-service
+        image: 728925775506.dkr.ecr.us-east-1.amazonaws.com/notification-service:latest
+        ports:
+        - containerPort: 8001
+
+---
+# --- INCIDENT FRONTEND DEPLOYMENT ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-frontend
+  labels:
+    app: incident-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: incident-frontend
+  template:
+    metadata:
+      labels:
+        app: incident-frontend
+    spec:
+      containers:
+      - name: incident-frontend
+        image: 728925775506.dkr.ecr.us-east-1.amazonaws.com/incident-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: INCIDENT_SERVICE_URL
+          value: "http://incident-service:8000"
