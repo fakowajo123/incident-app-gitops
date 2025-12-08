@@ -1,17 +1,26 @@
+# This ingress manifest tells the AWS Load Balancer Controller to create an ALB
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: incident-frontend-ingress
+  name: incident-app-ingress
   annotations:
-    kubernetes.io/ingress.class: alb
+    # 1. CRITICAL: Tells the controller to provision an AWS ALB
+    alb.ingress.kubernetes.io/scheme: internet-facing 
+    # 2. CRITICAL: Defines which ingress class to use
+    kubernetes.io/ingress.class: alb 
+    # 3. CRITICAL: Allows traffic from anywhere (for testing)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: "subnet-00dec4574161bf7c6, subnet-0a127391e17af727a, subnet-0a50ed4dc956526a1"
 spec:
   rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: incident-frontend-service
-                port:
-                  number: 80
+  - http:
+      paths:
+      # Route all traffic (/) to the frontend service
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: incident-frontend-service # We will define this next
+            port:
+              number: 80
