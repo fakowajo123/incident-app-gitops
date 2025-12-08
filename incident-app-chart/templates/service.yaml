@@ -1,1 +1,40 @@
+# --- INCIDENT SERVICE (Backend) ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: incident-service
+spec:
+  selector:
+    app: incident-service
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
 
+---
+# --- NOTIFICATION SERVICE (Backend) ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+
+---
+# --- INCIDENT FRONTEND SERVICE (Exposed via Ingress) ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: incident-frontend-service
+spec:
+  selector:
+    app: incident-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
