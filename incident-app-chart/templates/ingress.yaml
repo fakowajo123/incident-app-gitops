@@ -10,6 +10,7 @@ metadata:
     kubernetes.io/ingress.class: alb 
     # 3. CRITICAL: Allows traffic from anywhere (for testing)
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/subnets: "subnet-00dec4574161bf7c6, subnet-0a127391e17af727a, subnet-0a50ed4dc956526a1"
 spec:
   rules:
   - http:
