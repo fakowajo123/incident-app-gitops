@@ -1,1 +1,40 @@
 
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # The name of your Argo CD Application
+  name: incident-management-system
+  # The namespace where the Argo CD controller is running (usually 'argocd')
+  namespace: argocd 
+  # This finalizer helps Argo CD clean up resources when the Application is deleted
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  # General project scope
+  project: default
+  
+  # --- SOURCE CONFIGURATION ---
+  source:
+    # URL of your GitHub repository
+    repoURL: https://github.com/fakowajo123/incident-app-gitops
+    # Path within the repository containing your YAML manifests/Helm chart
+    path: incident-app-chart
+    # Use the latest commit on the main branch
+    targetRevision: HEAD
+  
+  # --- DESTINATION CONFIGURATION ---
+  destination:
+    # Target server is the cluster where Argo CD is installed
+    server: https://kubernetes.default.svc
+    # Target namespace where the application resources will be deployed
+    namespace: incident-system
+  
+  # --- SYNC POLICY ---
+  syncPolicy:
+    automated:
+      # Enables continuous watching of the Git repo
+      enabled: true
+      # Automatically reverts changes if config drift is detected
+      selfHeal: true
+      # Safely deletes old resources when applying new ones
+      prune: true
