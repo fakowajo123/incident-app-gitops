@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: incident-frontend-ingress
   annotations:
-    kubernetes.io/ingress.class: alb       # or nginx, etc.
+    kubernetes.io/ingress.class: alb
 spec:
   rules:
     - http:
