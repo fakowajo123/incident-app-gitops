@@ -1,5 +1,5 @@
 image:
   repository: 728925775506.dkr.ecr.us-east-1.amazonaws.com/incident-service
-  tag: "dev-123456"   # we’ll start updating this per build
+  tag: "latest"   # we’ll start updating this per build
   pullPolicy: IfNotPresent
 
