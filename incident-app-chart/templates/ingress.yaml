@@ -3,24 +3,19 @@ kind: Ingress
 metadata:
   name: incident-app-ingress
   annotations:
-    # 1. CRITICAL: Tells the controller to provision an AWS ALB
     kubernetes.io/ingress.class: alb 
-    # 2. CRITICAL: Ensures Load Balancer is public
     alb.ingress.kubernetes.io/scheme: internet-facing
-    # 3. CRITICAL: Listen on port 80
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    # 4. FINAL FIX: Explicit Subnet IDs (Ensure this matches the describe output)
-    alb.ingress.kubernetes.io/subnets: "subnet-00dec4574161bf7c6, subnet-0a127391e17af727a, subnet-0a50ed4dc956526a1" 
-
+    alb.ingress.kubernetes.io/subnets: "subnet-00dec4574161bf7c6, subnet-0a127391e17af727a, subnet-0a50ed4dc956526a1"
+    alb.ingress.kubernetes.io/target-type: ip   # 👈 ADD THIS
 spec:
   rules:
   - http:
       paths:
-      # Route all traffic (/) to the frontend service
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: incident-frontend-service 
+            name: incident-frontend-service
             port:
               number: 80
